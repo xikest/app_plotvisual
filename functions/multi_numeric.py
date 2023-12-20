@@ -14,7 +14,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 import statsmodels.api as sm
-from yellowbrick.classifier import ROCAUC
 #
 def call_example_multi_numeric():
     data = {
