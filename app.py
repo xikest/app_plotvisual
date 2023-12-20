@@ -46,20 +46,17 @@ def main():
     # tab1, tab2, tab3, tab4 = st.tabs(["Text Analysis", "Time Series Analysis", "Multiple Numerical Analysis", "Classification Analysis"])
     # Text Analysis
     with tab1:
-        col1_tab1, col2_tab1 = st.columns(2)
+        col1_tab1, col2_tab1 = st.columns([1,3])
         with col1_tab1:
             st.subheader("1. Data Preparation")
-            col1_col1_tab2, col2_col1_tab2 = st.columns([2, 1])
-            with col1_col1_tab2:
-                df_example_comments = call_example_comments()
+            df_example_comments = call_example_comments()
+            # st.markdown("---")
+            download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv", label="Sample download")
+            # st.dataframe(df_example_comments.head(2))
+            # download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv", label="Sample")
+            st.markdown("---")
+            text_data_uploaded = st.file_uploader("Upload Text data", key="time_text_data")
 
-                text_data_uploaded = st.file_uploader("Upload Text data", key="time_text_data")
-            with col2_col1_tab2:
-                # st.markdown("---")
-                download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv", label="Sample download")
-                st.dataframe(df_example_comments.head(2))
-                # download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv", label="Sample")
-                st.markdown("---")
             if text_data_uploaded is not None:
                 try:
                     comments = read_comments_from(text_data_uploaded, column_name="comments")
@@ -78,6 +75,9 @@ def main():
                     st.dataframe(df_word_freq.head(3))
                 except:
                     st.error('Please verify the file format', icon="🚨")
+
+
+
         with col2_tab1:
             if st.session_state["tab1"] is not None:
                 st.subheader("3. Visualization")
@@ -94,22 +94,17 @@ def main():
                     plot_networkg(corpus, dictionary)
     # Time Series Analysis
     with tab2:
-        col1_tab2, col2_tab2 = st.columns(2)
+        col1_tab2, col2_tab2 = st.columns([1,3])
         with col1_tab2:
-
             st.subheader("1. Data Preparation")
-            col1_col1_tab2, col2_col1_tab2 = st.columns([2, 1])
-            with col1_col1_tab2:
-                df_example_timeseries = call_example_timeseries()
-                time_data_uploaded = st.file_uploader("Upload Time Series", key="time_series_uploader")
-            with col2_col1_tab2:
-                download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv", label="Sample download")
-                st.dataframe(df_example_comments.head(2))
-                st.markdown("---")
+            df_example_timeseries = call_example_timeseries()
+            download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv", label="Sample download")
+            time_data_uploaded = st.file_uploader("Upload Time Series", key="time_series_uploader")
+            # st.dataframe(df_example_comments.head(2))
+            st.markdown("---")
             if time_data_uploaded is not None:
                 try:
                     timeseries = read_timeseries_from(time_data_uploaded)
-
                     st.session_state["tab2"] = {"timeseries": timeseries}
                     plot_time_series(timeseries)
                 except:
@@ -124,19 +119,18 @@ def main():
                 with tab2_col2_tab3: 
                     plot_timesseries_arima(timeseries)
     with tab3:
-        col1_tab3, col2_tab3 = st.columns(2)
+        col1_tab3, col2_tab3 = st.columns([1,3])
         with col1_tab3:
-
             st.subheader("1. Data Preparation")
-            col1_col1_tab3, col2_col1_tab3 = st.columns([2, 1])
-            with col1_col1_tab3:
-                df_example_multi_numeric = call_example_multi_numeric()
-                multi_data_uploaded = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
-            with col2_col1_tab3:
-                download_df_as_csv(df_example_multi_numeric, "sample_multi_numeric_data", key="download_multi_numeric_sample_csv",
-                                   label="Sample download")
-                st.dataframe(df_example_comments.head(2))
-                st.markdown("---")
+            # col1_col1_tab3, col2_col1_tab3 = st.columns([2, 1])
+            # with col1_col1_tab3:
+            df_example_multi_numeric = call_example_multi_numeric()
+            # with col2_col1_tab3:
+            download_df_as_csv(df_example_multi_numeric, "sample_multi_numeric_data", key="download_multi_numeric_sample_csv",
+                               label="Sample download")
+            multi_data_uploaded = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
+            # st.dataframe(df_example_comments.head(2))
+            st.markdown("---")
             if multi_data_uploaded is not None:
                 try:
                     st.subheader("2. Build Model")
