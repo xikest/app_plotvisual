@@ -193,7 +193,7 @@ def main():
 
         st.subheader("4. Image Analysis")
 
-        download_image_example(url=)
+        download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png")
         image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
         st.markdown("---")
         if image_data_uploaded is not None:
