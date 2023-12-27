@@ -191,7 +191,7 @@ def main():
 
     with tab4 :
 
-        st.subheader("4. Image Analysis")
+        st.subheader("1. Data Preparation")
 
         download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png")
         image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
@@ -199,7 +199,8 @@ def main():
         if image_data_uploaded is not None:
             try:
                 # st.write(image_data_uploaded.name)
-
+                st.image(image_data_uploaded, use_column_width=True)
+                st.subheader("2. Analysis results")
                 to_lab_image(image_data_uploaded)
 
             except Exception as e:
