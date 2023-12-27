@@ -33,7 +33,7 @@ def main():
             st.write("`ADF(Augmented Dickey-Fuller test)`, `ARIMA`, `Prophet`")
             st.markdown("**3. Multiple Numerical**")
             st.write("`Correlation`, `Distribution`, `ML Prediction`")
-            st.markdown("**4. Image **")
+            st.markdown("**4. Image**")
             st.write("`CIE LAB`")
         st.markdown("---")
         st.write(
@@ -193,7 +193,7 @@ def main():
 
         st.subheader("4. Image Analysis")
 
-
+        download_image_example(url=)
         image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
         st.markdown("---")
         if image_data_uploaded is not None:
