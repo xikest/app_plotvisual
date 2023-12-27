@@ -2,6 +2,7 @@
 from functions.text import *
 from functions.timeseries import *
 from functions.multi_numeric import *
+from functions.image_analysis import *
 
 def main():
     # basic setting
@@ -32,7 +33,8 @@ def main():
             st.write("`ADF(Augmented Dickey-Fuller test)`, `ARIMA`, `Prophet`")
             st.markdown("**3. Multiple Numerical**")
             st.write("`Correlation`, `Distribution`, `ML Prediction`")
-            # st.markdown("**4. Classification Analysis**")
+            st.markdown("**4. Image **")
+            st.write("`CIE LAB`")
         st.markdown("---")
         st.write(
             """     
@@ -42,7 +44,7 @@ def main():
         st.markdown("---")
 
     # Insert containers separated into tabs:
-    tab1, tab2, tab3 = st.tabs(["Text", "Time Series", "Multiple Numerical"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Text", "Time Series", "Multiple Numerical", "Image Analysis"])
     # tab1, tab2, tab3, tab4 = st.tabs(["Text Analysis", "Time Series Analysis", "Multiple Numerical Analysis", "Classification Analysis"])
     # Text Analysis
     with tab1:
@@ -186,6 +188,22 @@ def main():
 
                     except:
                         st.error('Please verify the file format', icon="🚨")
+
+    with tab4 :
+
+        st.subheader("4. Image Analysis")
+
+
+        image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
+        st.markdown("---")
+        if image_data_uploaded is not None:
+            try:
+                # st.write(image_data_uploaded.name)
+
+                to_lab_image(image_data_uploaded)
+
+            except Exception as e:
+                st.write(e)
 
 
 
