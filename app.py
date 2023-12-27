@@ -14,7 +14,7 @@ def main():
     st.session_state.setdefault("tab1", None)
     st.session_state.setdefault("tab2", None)
     st.session_state.setdefault("tab3", None)
-
+    st.session_state.setdefault("tab4", None)
     # Title
     st.header("Plot Visualization")
 
@@ -190,21 +190,23 @@ def main():
                         st.error('Please verify the file format', icon="🚨")
 
     with tab4 :
+        col1_tab4, col2_tab4 = st.columns([1,3])
+        with col1_tab4:
+            st.subheader("1. Data Preparation")
 
-        st.subheader("1. Data Preparation")
-
-        download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png")
-        image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
-        st.markdown("---")
-        if image_data_uploaded is not None:
-            try:
-                # st.write(image_data_uploaded.name)
+            download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png")
+            image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
+            st.markdown("---")
+            if image_data_uploaded is not None:
                 st.image(image_data_uploaded, use_column_width=True)
+                st.session_state["tab4"] = image_data_uploaded
+        with col2_tab4:
+            if st.session_state["tab4"] is not None:
                 st.subheader("2. Analysis results")
-                to_lab_image(image_data_uploaded)
-
-            except Exception as e:
-                st.write(e)
+                try:
+                    to_lab_image(st.session_state["tab4"])
+                except Exception as e:
+                    st.write(e)
 
 
 
