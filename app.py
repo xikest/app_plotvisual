@@ -108,7 +108,7 @@ def main():
                     plot_networkg(corpus, dictionary)
     # Time Series Analysis
     with tab2:
-        col1_tab2, col2_tab2 = st.columns(2)
+        col1_tab2, col2_tab2 = st.columns([1,3])
         with col1_tab2:
             st.subheader("1. Data Preparation")
             df_example_timeseries = call_example_timeseries()
