@@ -15,7 +15,12 @@ def main():
     st.session_state.setdefault("tab2", None)
     st.session_state.setdefault("tab3", None)
     st.session_state.setdefault("tab4", None)
-    st.session_state.setdefault("upload", None)
+    st.session_state.setdefault("upload_tab1", None)
+    st.session_state.setdefault("upload_tab2", None)
+    st.session_state.setdefault("upload_tab3", None)
+    st.session_state.setdefault("upload_tab3_a", None)
+    st.session_state.setdefault("upload_tab4", None)
+
     # Title
     st.header("Plot Visualization")
 
@@ -60,8 +65,12 @@ def main():
             st.markdown("---")
             # text_data_uploaded = st.file_uploader("Upload Text data", key="time_text_data")
 
-            st.session_state["upload"]["tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
-            if st.session_state["upload"]["tab1"] is not None:
+            st.session_state["upload_tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
+            if st.session_state["upload_tab1"] is not None:
+                st.session_state["upload_tab2"] = None
+                st.session_state["upload_tab3"] = None
+                st.session_state["upload_tab4"] = None
+                text_data_uploaded = st.session_state["upload_tab1"]
                 try:
                     comments = read_comments_from(text_data_uploaded, column_name="comments")
                     comments_as_string = ' '.join(comments.astype(str))
@@ -105,10 +114,14 @@ def main():
             df_example_timeseries = call_example_timeseries()
             download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv", label="Sample download")
             # time_data_uploaded = st.file_uploader("Upload Time Series", key="time_series_uploader")
-            st.session_state["upload"]["tab2"] = st.file_uploader("Upload Time Series", key="time_series_uploader")
+            st.session_state["upload_tab2"] = st.file_uploader("Upload Time Series", key="time_series_uploader")
             # st.dataframe(df_example_comments.head(2))
             st.markdown("---")
-            if st.session_state["upload"]["tab2"] is not None:
+            if st.session_state["upload_tab2"] is not None:
+                st.session_state["upload_tab1"] = None
+                st.session_state["upload_tab3"] = None
+                st.session_state["upload_tab4"] = None
+                time_data_uploaded = st.session_state["upload_tab2"]
                 try:
                     timeseries = read_timeseries_from(time_data_uploaded)
                     st.session_state["tab2"] = {"timeseries": timeseries}
@@ -135,10 +148,14 @@ def main():
             download_df_as_csv(df_example_multi_numeric, "sample_multi_numeric_data", key="download_multi_numeric_sample_csv",
                                label="Sample download")
             # multi_data_uploaded = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
-            st.session_state["upload"]["tab3"] = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
+            st.session_state["upload_tab3"] = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
             # st.dataframe(df_example_comments.head(2))
             st.markdown("---")
-            if st.session_state["upload"]["tab3"] is not None:
+            if st.session_state["upload_tab3"] is not None:
+                st.session_state["upload_tab1"] = None
+                st.session_state["upload_tab2"] = None
+                st.session_state["upload_tab4"] = None
+                multi_data_uploaded = st.session_state["upload_tab3"]
                 try:
                     st.subheader("2. Build Model")
                     df_multi = read_numeric_from(multi_data_uploaded)
@@ -180,8 +197,10 @@ def main():
         with col2_tab3:
             if st.session_state["tab3"] is not None:
                 st.subheader("3. Actual prediction")
-                actual_multi_data_uploaded = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
-                if actual_multi_data_uploaded is not None:
+                # actual_multi_data_uploaded = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
+                st.session_state["upload_tab3_a"] = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
+                if st.session_state["upload_tab3_a"] is not None:
+                    actual_multi_data_uploaded = st.session_state["upload_tab3_a"]
                     try:
                         st.markdown("---")
                         df_X = read_numeric_from(actual_multi_data_uploaded)
@@ -200,17 +219,20 @@ def main():
             st.subheader("1. Data Preparation")
 
             download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png")
-            image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
-            
+            # image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
+            st.session_state["upload_tab4"] = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
             st.markdown("---")
-            if image_data_uploaded is not None:
+            if st.session_state["upload_tab4"] is not None:
+                st.session_state["upload_tab1"] = None
+                st.session_state["upload_tab2"] = None
+                st.session_state["upload_tab3"] = None
+                image_data_uploaded = st.session_state["upload_tab4"]
                 st.image(image_data_uploaded, use_column_width=True)
-                st.session_state["tab4"] = image_data_uploaded
         with col2_tab4:
             if st.session_state["tab4"] is not None:
                 st.subheader("2. Analysis results")
                 try:
-                    to_lab_image(st.session_state["tab4"])
+                    to_lab_image(image_data_uploaded)
                 except Exception as e:
                     st.write(e)
 
