@@ -8,8 +8,8 @@ from io import BytesIO
 
 def download_image_example(url):
     response = requests.get(url)
-    with open("downloaded_image.png", "wb") as f:
-        f.write(response.content)
+    # with open("downloaded_image.png", "wb") as f:
+    #     f.write(response.content)
 
     # 이미지 데이터를 바이트로 변환
     img_bytes = BytesIO(response.content).read()
