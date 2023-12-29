@@ -229,7 +229,7 @@ def main():
                 image_data_uploaded = st.session_state["upload_tab4"]
                 st.image(image_data_uploaded, use_column_width=True)
         with col2_tab4:
-            if st.session_state["tab4"] is not None:
+            if st.session_state["upload_tab4"] is not None:
                 st.subheader("2. Analysis results")
                 try:
                     to_lab_image(image_data_uploaded)
