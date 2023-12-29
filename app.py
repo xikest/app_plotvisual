@@ -25,29 +25,29 @@ def main():
     st.header("Plot Visualization")
 
     # Side bar
-    with st.sidebar:
-        # Basic description
-        st.subheader("Project Description")
-        st.write("This project supports basic analysis.")
-
-        st.markdown("---")
-
-        with st.expander("Usage", expanded=False):
-            st.markdown("**1. Text**")
-            st.write("`Word frequency`, `Word clouds`, `network graph of topics`")
-            st.markdown("**2. Time Series**")
-            st.write("`ADF(Augmented Dickey-Fuller test)`, `ARIMA`, `Prophet`")
-            st.markdown("**3. Multiple Numerical**")
-            st.write("`Correlation`, `Distribution`, `ML Prediction`")
-            st.markdown("**4. Image**")
-            st.write("`CIE LAB`")
-        st.markdown("---")
-        st.write(
-            """     
-            Written by TJ.Kim ☕
-            """
-        )
-        st.markdown("---")
+    # with st.sidebar():
+    #     # Basic description
+    #     st.subheader("Project Description")
+    #     st.write("This project supports basic analysis.")
+    #
+    #     st.markdown("---")
+    #
+    #     with st.expander("Usage", expanded=False):
+    #         st.markdown("**1. Text**")
+    #         st.write("`Word frequency`, `Word clouds`, `network graph of topics`")
+    #         st.markdown("**2. Time Series**")
+    #         st.write("`ADF(Augmented Dickey-Fuller test)`, `ARIMA`, `Prophet`")
+    #         st.markdown("**3. Multiple Numerical**")
+    #         st.write("`Correlation`, `Distribution`, `ML Prediction`")
+    #         st.markdown("**4. Image**")
+    #         st.write("`CIE LAB`")
+    #     st.markdown("---")
+    #     st.write(
+    #         """
+    #         Written by TJ.Kim ☕
+    #         """
+    #     )
+    #     st.markdown("---")
 
     # Insert containers separated into tabs:
     tab1, tab2, tab3, tab4 = st.tabs(["Text", "Time Series", "Multiple Numerical", "Image Analysis"])
