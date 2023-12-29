@@ -27,7 +27,7 @@ def call_example_comments() -> pd.DataFrame:
     # dataframe
     df = pd.DataFrame(comments)
     st.markdown("**Supported Formats: CSV, Excel, Text**")
-    st.markdown("Excel (or CSV) Considerations: `comments` column is the subject of analysis.")
+    st.markdown("`comments` column is the subject of analysis.")
     return df
 
 def read_comments_from(data_uploaded, column_name="comments") -> pd.Series:

@@ -2330,7 +2330,7 @@ def call_example_timeseries():
     df.index.name = "date"
     df = df.reset_index()
     st.markdown("**Supported Formats: CSV, Excel**")
-    st.markdown("Excel (or CSV) Considerations: `date` ,`timeseries` column is the subject of analysis.")
+    st.markdown("`date` ,`timeseries` column is the subject of analysis.")
     return df
 
 def read_timeseries_from(data_uploaded, index_name="date", data_column='timeseries') -> pd.Series:

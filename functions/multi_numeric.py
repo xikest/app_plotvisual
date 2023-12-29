@@ -29,7 +29,7 @@ def call_example_multi_numeric():
     }
     df = pd.DataFrame(data)
     st.markdown("**Supported Formats: CSV, Excel**")
-    st.markdown("Excel (or CSV) Considerations: `target` column is assigned as the dependent variable.")
+    st.markdown("`target` column is assigned as the dependent variable.")
     return df
 def read_numeric_from(data_uploaded, column_target: str = "target") -> pd.DataFrame:
     df = pd.DataFrame()

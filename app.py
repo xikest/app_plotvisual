@@ -138,7 +138,7 @@ def main():
                 with tab2_col2_tab3: 
                     plot_timesseries_arima(timeseries)
     with tab3:
-        col1_tab3, col2_tab3 = st.columns([1,3])
+        col1_tab3, col2_tab3 = st.columns(2)
         with col1_tab3:
             st.subheader("1. Data Preparation")
             # col1_col1_tab3, col2_col1_tab3 = st.columns([2, 1])
