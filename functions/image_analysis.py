@@ -31,18 +31,18 @@ def to_lab_image(image_data, input_type='BGR'):
     image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
 
-    conversion = cv2.COLOR_BGR2LAB if input_type == 'BGR' else cv2.COLOR_RGB2LAB
-    image_LAB = cv2.cvtColor(image, conversion)
+    conversion = cv2.COLOR_BGR2Luv if input_type == 'BGR' else cv2.COLOR_RGB2Luv
+    image_LUV = cv2.cvtColor(image, conversion)
 
-    y, x, z = image_LAB.shape
-    LAB_flat = np.reshape(image_LAB, [y * x, z])
+    y, x, z = image_LUV.shape
+    LUV_flat = np.reshape(image_LUV, [y * x, z])
 
     colors = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) if input_type == 'BGR' else image
     colors = np.reshape(colors, [y * x, z]) / 255.
 
-    l = LAB_flat[:, 0]
-    a = LAB_flat[:, 1]
-    b = LAB_flat[:, 2]
+    l = LUV_flat[:, 0]
+    u = LUV_flat[:, 1]
+    v = LUV_flat[:, 2]
 
 
 
@@ -55,38 +55,50 @@ def to_lab_image(image_data, input_type='BGR'):
 
     fig = plt.figure(figsize=(12, 12))
     ax1 = fig.add_subplot(221, projection='3d')
-    ax1.scatter(xs=a, ys=b, zs=l, s=10, c=colors, lw=0)
-    ax1.set_xlabel('A')
-    ax1.set_ylabel('B')
+    ax1.scatter(xs=u, ys=v, zs=l, s=10, c=colors, lw=0)
+    ax1.set_xlabel('U')
+    ax1.set_ylabel('V')
     ax1.set_zlabel('L')
     ax1.set_xlim([0, 255])
     ax1.set_ylim([0, 255])
     ax1.set_zlim([0, 255])
-    ax1.set_title('L-A-B')
+    ax1.set_xticks([])  # X 축 눈금 비활성화
+    ax1.set_yticks([])  # Y 축 눈금 비활성화
+    ax1.set_zticks([])  # Z 축 눈금 비활성화
+    ax1.set_title('L-U-V')
 
     ax2 = fig.add_subplot(222)
-    ax2.scatter(y=b, x=a, s=10, c=colors, lw=0)
-    ax2.set_xlabel('A')
-    ax2.set_ylabel('B')
+    ax2.scatter(y=v, x=u, s=10, c=colors, lw=0)
+    ax2.set_xlabel('u')
+    ax2.set_ylabel('v')
     ax2.set_xlim([0, 255])
     ax2.set_ylim([0, 255])
-    ax2.set_title('A-B')
+    ax2.set_xticks([])  # X 축 눈금 비활성화
+    ax2.set_yticks([])  # Y 축 눈금 비활성화
+    ax2.set_title('u-v')
+
 
     ax3 = fig.add_subplot(223)
-    ax3.scatter(x=a, y=l, s=10, c=colors, lw=0)
-    ax3.set_xlabel('A')
+    ax3.scatter(x=u, y=l, s=10, c=colors, lw=0)
+    ax3.set_xlabel('U')
     ax3.set_ylabel('L')
     ax3.set_xlim([0, 255])
     ax3.set_ylim([0, 255])
+    ax3.set_xticks([])  # X 축 눈금 비활성화
+    ax3.set_yticks([])  # Y 축 눈금 비활성화
     ax3.set_title('L-A')
 
+
     ax4 = fig.add_subplot(224)
-    ax4.scatter(x=b, y=l, s=10, c=colors, lw=0)
-    ax4.set_xlabel('B')
+    ax4.scatter(x=v, y=l, s=10, c=colors, lw=0)
+    ax4.set_xlabel('V')
     ax4.set_ylabel('L')
     ax4.set_xlim([0, 255])
     ax4.set_ylim([0, 255])
-    ax4.set_title('L-B')
+    ax4.set_xticks([])  # X 축 눈금 비활성화
+    ax4.set_yticks([])  # Y 축 눈금 비활성화
+    ax4.set_title('L-V')
+
 
     # Streamlit에 그래프 추가
     # st.pyplot(fig_input)
