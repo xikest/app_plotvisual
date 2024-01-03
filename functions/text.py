@@ -35,7 +35,7 @@ def call_example_replacement() -> pd.DataFrame:
     # creating exmaple data
     replacement = {
         'key': ["sample","this" ],
-        'replacement': ["a","c"]}
+        'replacement': ["spl","thsi"]}
     # dataframe
     df = pd.DataFrame(replacement)
     st.markdown("`key`,`replacement`: replacement columns ")
