@@ -30,6 +30,18 @@ def call_example_comments() -> pd.DataFrame:
     st.markdown("`comments` column is the subject of analysis.")
     return df
 
+
+def call_example_replacement() -> pd.DataFrame:
+    # creating exmaple data
+    replacement = {
+        'key': ["sample","this" ],
+        'replacement': ["a","c"]}
+    # dataframe
+    df = pd.DataFrame(replacement)
+    st.markdown("`key`,`replacement`: replacement columns ")
+    return df
+
+
 def read_comments_from(data_uploaded, column_name="comments") -> pd.Series:
     df = pd.DataFrame()
     supported_formats = ['.csv', '.xlsx', '.txt']
@@ -47,7 +59,25 @@ def read_comments_from(data_uploaded, column_name="comments") -> pd.Series:
         comments = df.loc[:, column_name]
     except KeyError:
         comments = df.iloc[:, 0]
-    return comments
+    return comments.str.lower()
+def read_replacement_from(data_uploaded, column_name=["key","replace"]) -> dict:
+    df = pd.DataFrame()
+    supported_formats = ['.csv', '.xlsx', '.txt']
+    if data_uploaded.name.endswith(tuple(supported_formats)):
+        if data_uploaded.name.endswith('.csv'):
+            df = pd.read_csv(data_uploaded)
+        elif data_uploaded.name.endswith('.xlsx'):
+            df = pd.read_excel(data_uploaded, engine='openpyxl')
+        elif data_uploaded.name.endswith('.txt'):
+            df = pd.read_csv(data_uploaded, delimiter='\t')  # Assuming tab-separated text file
+    else:
+        st.error("This file format is not supported. Please upload a CSV, Excel, or text file.")
+        st.stop()
+    try:
+        remplacement_dict=  {k:v for k, v in zip(df[column_name[0]].str.lower(), df[column_name[1]].str.lower())}
+    except KeyError:
+        remplacement_dict = {k:v for k, v in zip(df.iloc[:,0].str.lower(), df.iloc[:,1].str.lower())}
+    return remplacement_dict
 
 def prepare_networkg(text) -> "corpus, dictionary":
     text = text.lower()
@@ -64,22 +94,22 @@ def prepare_networkg(text) -> "corpus, dictionary":
     corpus = [dictionary.doc2bow(nouns_adjectives)]
     return corpus, dictionary
 
-def prepare_nouns(comments):
-    all_words = []
+def prepare_nouns(comments:pd.Series) ->pd.Series:
+    words_list = []
+
     # nltk data download
     nltk.download('punkt')
     nltk.download('stopwords')
     nltk.download('averaged_perceptron_tagger')
+    stop_words = set(stopwords.words('english'))
+
     for comment in comments:
         tokens = word_tokenize(comment)  # tokenize
-        all_words.extend(tokens)
-    # stopward
-    stop_words = set(stopwords.words('english'))
-    filtered_words = [word.lower() for word in all_words if
-                      word.isalnum() and word.lower() not in stop_words]
-    # nouns
-    nouns = [word for (word, tag) in pos_tag(filtered_words) if tag.startswith('N')]
-    return nouns
+        filtered_tokens = [token.lower() for token in tokens if token.isalnum() and token.lower() not in stop_words]
+        nouns = [word for (word, tag) in pos_tag(filtered_tokens) if tag.startswith('N')]
+        words_list.append(nouns)
+
+    return pd.Series(words_list, name="comments")
     
 def prepare_word_freq(nouns) -> pd.DataFrame:
     # nouns frequncy

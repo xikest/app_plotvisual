@@ -6,7 +6,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-def download_image_example(url):
+def download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png", demo_mode=False):
     response = requests.get(url)
     # with open("downloaded_image.png", "wb") as f:
     #     f.write(response.content)
@@ -16,18 +16,23 @@ def download_image_example(url):
 
     # img_file = Image.open(BytesIO(response.content))
     # st.image(img_file, caption="Downloaded Image", use_column_width=True)
-
+    if demo_mode:
+        return img_bytes
+    else:
     # 다운로드 버튼에 이미지 데이터 설정
-    st.download_button(
-        label="Sample download",
-        data=img_bytes,
-        file_name="example.png",
-        mime="image/png",
-        key="download_sample_img"
-    )
-def to_lab_image(image_data, input_type='BGR'):
-
-    image_array = np.asarray(bytearray(image_data.read()), dtype=np.uint8)
+        st.download_button(
+                label="Sample download",
+                data=img_bytes,
+                file_name="example.png",
+                mime="image/png",
+                key="download_sample_img"
+            )
+        return None
+def to_lab_image(image_data, input_type='BGR', byte_type=False):
+    if byte_type:
+        image_array = np.asarray(bytearray(image_data), dtype=np.uint8)
+    else:
+        image_array = np.asarray(bytearray(image_data.read()), dtype=np.uint8)
     image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
 
