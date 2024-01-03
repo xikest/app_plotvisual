@@ -25,6 +25,11 @@ def main():
 
     # Title
     st.header("Plot Visualization")
+    st.write(
+        """
+        Relaxation with ☕
+        """
+    )
     demo_checkbox_clicked = st.checkbox("Demo")
     # Side bar
     # with st.sidebar():
