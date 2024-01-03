@@ -24,7 +24,7 @@ def main():
 
     # Title
     st.header("Plot Visualization")
-
+    demo_checkbox_clicked = st.checkbox("Demo")
     # Side bar
     # with st.sidebar():
     #     # Basic description
@@ -65,12 +65,12 @@ def main():
             download_df_as_csv(df_example_replacement, file_name="replacement_data", key="download_replacement_sample_csv",
                                label="replacement download")
 
-            tab1_checkbox_clicked = st.checkbox("Text Demo")
+
             st.markdown("---")
             # text_data_uploaded = st.file_uploader("Upload Text data", key="time_text_data")
 
 
-            if tab1_checkbox_clicked:
+            if demo_checkbox_clicked:
                 st.session_state["upload_tab1"] = df_example_comments
             else:
                 st.session_state["upload_tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
@@ -82,7 +82,7 @@ def main():
                 st.session_state["upload_tab4"] = None
                 text_data_uploaded = st.session_state["upload_tab1"]
                 try:
-                    if tab1_checkbox_clicked:
+                    if demo_checkbox_clicked:
                         comments = st.session_state["upload_tab1"].loc[:, "comments"].str.lower()
                     else:
                         comments = read_comments_from(text_data_uploaded, column_name="comments")
@@ -120,8 +120,6 @@ def main():
                 except:
                     st.error('Please verify the file format', icon="🚨")
 
-
-
         with col2_tab1:
             if st.session_state["tab1"] is not None:
                 st.subheader("3. Visualization")
@@ -145,11 +143,10 @@ def main():
             download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv", label="Sample download")
             # time_data_uploaded = st.file_uploader("Upload Time Series", key="time_series_uploader")
 
-            tab2_checkbox_clicked = st.checkbox("Timeseries Demo")
             # st.dataframe(df_example_comments.head(2))
             st.markdown("---")
 
-            if tab2_checkbox_clicked:
+            if demo_checkbox_clicked:
                 st.session_state["upload_tab2"] = df_example_timeseries
             else:
                 st.session_state["upload_tab2"] = st.file_uploader("Upload Time Series", key="time_series_uploader")
@@ -161,7 +158,7 @@ def main():
                 st.session_state["upload_tab4"] = None
                 time_data_uploaded = st.session_state["upload_tab2"]
                 try:
-                    if tab2_checkbox_clicked:
+                    if demo_checkbox_clicked:
                         timeseries = time_data_uploaded.loc[:, ["date", "timeseries"]]
                         timeseries.loc[:, "timeseries"] = timeseries.loc[:, "timeseries"].astype(float)  # 숫자형으로 변경
                         timeseries = timeseries.set_index("date")
@@ -196,11 +193,10 @@ def main():
             # multi_data_uploaded = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
             # st.dataframe(df_example_comments.head(2))
 
-            tab3_checkbox_clicked = st.checkbox("Multiple Numerical Demo")
             # st.dataframe(df_example_comments.head(2))
             st.markdown("---")
 
-            if tab3_checkbox_clicked:
+            if demo_checkbox_clicked:
                 st.session_state["upload_tab3"] = df_example_multi_numeric
             else:
                 st.session_state["upload_tab3"] = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
@@ -212,7 +208,7 @@ def main():
                 multi_data_uploaded = st.session_state["upload_tab3"]
                 try:
                     st.subheader("2. Build Model")
-                    if tab3_checkbox_clicked:
+                    if demo_checkbox_clicked:
                         y = multi_data_uploaded.loc[:, "target"]
                         X = multi_data_uploaded.drop("target", axis=1)
                         df_multi = pd.concat([y, X], axis=1)
@@ -260,7 +256,7 @@ def main():
                 st.subheader("3. Actual prediction")
                 # actual_multi_data_uploaded = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
                 # demo mode
-                if tab3_checkbox_clicked:
+                if demo_checkbox_clicked:
                     st.session_state["upload_tab3_a"] = df_multi
                 else:
                     st.session_state["upload_tab3_a"] = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
@@ -269,7 +265,7 @@ def main():
                     actual_multi_data_uploaded = st.session_state["upload_tab3_a"]
                     try:
                         st.markdown("---")
-                        if tab3_checkbox_clicked:
+                        if demo_checkbox_clicked:
                             df_X = df_multi
                         else:
                             df_X = read_numeric_from(actual_multi_data_uploaded)
@@ -291,13 +287,12 @@ def main():
             _ = download_image_example()
             # image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
 
-            tab4_checkbox_clicked = st.checkbox("Image Demo")
-
-            if tab4_checkbox_clicked:
+            if demo_checkbox_clicked:
                 st.session_state["upload_tab4"] = download_image_example(demo_mode=True)
+                if st.session_state["upload_tab4"] is "":
+                    st.session_state["upload_tab4"] = None
             else:
                 st.session_state["upload_tab4"] = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
-
 
 
             st.markdown("---")
@@ -311,13 +306,12 @@ def main():
             if st.session_state["upload_tab4"] is not None:
                 st.subheader("2. Analysis results")
                 try:
-                    if tab4_checkbox_clicked:
+                    if demo_checkbox_clicked:
                         to_lab_image(image_data_uploaded, byte_type=True)
                     else:
                         to_lab_image(image_data_uploaded)
                 except Exception as e:
                     st.write(e)
-
 
 
 if __name__ == "__main__":

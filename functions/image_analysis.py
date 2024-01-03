@@ -6,13 +6,22 @@ from PIL import Image
 import requests
 from io import BytesIO
 
+
+
+
 def download_image_example(url="https://raw.githubusercontent.com/xikest/app_plotvisual/main/sample_img.png", demo_mode=False):
-    response = requests.get(url)
+
+    try:
+        response = requests.get(url)
     # with open("downloaded_image.png", "wb") as f:
     #     f.write(response.content)
 
     # 이미지 데이터를 바이트로 변환
-    img_bytes = BytesIO(response.content).read()
+        img_bytes = BytesIO(response.content).read()
+    except:
+        st.error("http connection error")
+        img_bytes = ""
+
 
     # img_file = Image.open(BytesIO(response.content))
     # st.image(img_file, caption="Downloaded Image", use_column_width=True)
