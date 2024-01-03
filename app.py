@@ -17,6 +17,7 @@ def main():
     st.session_state.setdefault("tab3", None)
     st.session_state.setdefault("tab4", None)
     st.session_state.setdefault("upload_tab1", None)
+    st.session_state.setdefault("upload_tab1_r", None)
     st.session_state.setdefault("upload_tab2", None)
     st.session_state.setdefault("upload_tab3", None)
     st.session_state.setdefault("upload_tab3_a", None)
