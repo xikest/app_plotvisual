@@ -290,7 +290,7 @@ def main():
 
             if demo_checkbox_clicked:
                 st.session_state["upload_tab4"] = download_image_example(demo_mode=True)
-                if st.session_state["upload_tab4"] is "":
+                if st.session_state["upload_tab4"] == "":
                     st.session_state["upload_tab4"] = None
             else:
                 st.session_state["upload_tab4"] = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
