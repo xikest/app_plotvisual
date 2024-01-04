@@ -1,65 +1,28 @@
 import pandas as pd
-
 from functions.text import *
 from functions.timeseries import *
 from functions.multi_numeric import *
 from functions.image_analysis import *
 
+
+
 def main():
-    # basic setting
-    st.set_page_config(
-        page_title="plot stream",
-        layout="wide")
+    st.set_page_config(page_title="plot stream", layout="wide")
 
     # session state initialize
-    st.session_state.setdefault("tab1", None)
-    st.session_state.setdefault("tab2", None)
-    st.session_state.setdefault("tab3", None)
-    st.session_state.setdefault("tab4", None)
-    st.session_state.setdefault("upload_tab1", None)
-    st.session_state.setdefault("upload_tab1_r", None)
-    st.session_state.setdefault("upload_tab2", None)
-    st.session_state.setdefault("upload_tab3", None)
-    st.session_state.setdefault("upload_tab3_a", None)
-    st.session_state.setdefault("upload_tab4", None)
+    state_vars = ["tab1", "tab2", "tab3", "tab4", "upload_tab1", "upload_tab1_r", "upload_tab2",
+                  "upload_tab3", "upload_tab3_a", "upload_tab4"]
 
-    # Title
+    for var in state_vars:
+        st.session_state.setdefault(var, None)
+
     st.header("Plot Visualization")
-    st.write(
-        """
-        Relaxation with ☕
-        """
-    )
+    st.write("Relaxation with ☕")
     demo_checkbox_clicked = st.checkbox("Demo")
-    # Side bar
-    # with st.sidebar():
-    #     # Basic description
-    #     st.subheader("Project Description")
-    #     st.write("This project supports basic analysis.")
-    #
-    #     st.markdown("---")
-    #
-    #     with st.expander("Usage", expanded=False):
-    #         st.markdown("**1. Text**")
-    #         st.write("`Word frequency`, `Word clouds`, `network graph of topics`")
-    #         st.markdown("**2. Time Series**")
-    #         st.write("`ADF(Augmented Dickey-Fuller test)`, `ARIMA`, `Prophet`")
-    #         st.markdown("**3. Multiple Numerical**")
-    #         st.write("`Correlation`, `Distribution`, `ML Prediction`")
-    #         st.markdown("**4. Image**")
-    #         st.write("`CIE LAB`")
-    #     st.markdown("---")
-    #     st.write(
-    #         """
-    #         Written by TJ.Kim ☕
-    #         """
-    #     )
-    #     st.markdown("---")
 
     # Insert containers separated into tabs:
     tab1, tab2, tab3, tab4 = st.tabs(["Text", "Time Series", "Multiple Numerical", "Image Analysis"])
-    # tab1, tab2, tab3, tab4 = st.tabs(["Text Analysis", "Time Series Analysis", "Multiple Numerical Analysis", "Classification Analysis"])
-    # Text Analysis
+
     with tab1:
         col1_tab1, col2_tab1 = st.columns([1,3])
         with col1_tab1:
@@ -130,16 +93,19 @@ def main():
             if st.session_state["tab1"] is not None:
                 st.subheader("3. Visualization")
                 tab1_col2_tab1, tab2_col2_tab1, tab3_col2_tab1 = st.tabs(["Plot", "Word Cloud", "Network Graph"])
-                with tab1_col2_tab1:
-                    df_word_freq = st.session_state["tab1"]["plot_df_word_freq"]
-                    plot_freq(df_word_freq)
-                with tab2_col2_tab1:
-                    nouns = st.session_state["tab1"]["wordcloud_nouns"]
-                    plot_wordcloud(nouns)
-                with tab3_col2_tab1:
-                    corpus = st.session_state["tab1"]["network_corpus"]
-                    dictionary = st.session_state["tab1"]["network_dictionary"]
-                    plot_networkg(corpus, dictionary)
+                try:
+                    with tab1_col2_tab1:
+                        df_word_freq = st.session_state["tab1"]["plot_df_word_freq"]
+                        plot_freq(df_word_freq)
+                    with tab2_col2_tab1:
+                        nouns = st.session_state["tab1"]["wordcloud_nouns"]
+                        plot_wordcloud(nouns)
+                    with tab3_col2_tab1:
+                        corpus = st.session_state["tab1"]["network_corpus"]
+                        dictionary = st.session_state["tab1"]["network_dictionary"]
+                        plot_networkg(corpus, dictionary)
+                except:
+                    st.warning("Please upload text data first.")
     # Time Series Analysis
     with tab2:
         col1_tab2, col2_tab2 = st.columns([1,3])
@@ -184,7 +150,7 @@ def main():
                 timeseries = st.session_state["tab2"]["timeseries"]
                 with tab1_col2_tab3:
                     plot_prophet(timeseries)
-                with tab2_col2_tab3: 
+                with tab2_col2_tab3:
                     plot_timesseries_arima(timeseries)
     with tab3:
         col1_tab3, col2_tab3 = st.columns(2)
