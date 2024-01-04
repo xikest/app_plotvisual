@@ -1,3 +1,4 @@
+# 필요한 라이브러리를 불러옵니다.
 import pandas as pd
 from functions.text import *
 from functions.timeseries import *
@@ -5,39 +6,42 @@ from functions.multi_numeric import *
 from functions.image_analysis import *
 
 
-
+# 메인 함수 정의
 def main():
+    # Streamlit 페이지 설정
     st.set_page_config(page_title="plot stream", layout="wide")
 
-    # session state initialize
+    # 세션 상태 초기화를 위한 변수 리스트
     state_vars = ["tab1", "tab2", "tab3", "tab4", "upload_tab1", "upload_tab1_r", "upload_tab2",
                   "upload_tab3", "upload_tab3_a", "upload_tab4"]
 
+    # 각 변수에 대해 세션 상태를 설정하거나 유지합니다.
     for var in state_vars:
         st.session_state.setdefault(var, None)
 
+    # 페이지 헤더 및 설명
     st.header("Plot Visualization")
     st.write("Relaxation with ☕")
     demo_checkbox_clicked = st.checkbox("Demo")
 
-    # Insert containers separated into tabs:
+    # 각 탭에 대한 컨테이너를 삽입합니다.
     tab1, tab2, tab3, tab4 = st.tabs(["Text", "Time Series", "Multiple Numerical", "Image Analysis"])
 
+    # Text 탭
     with tab1:
-        col1_tab1, col2_tab1 = st.columns([1,3])
+        col1_tab1, col2_tab1 = st.columns([1, 3])
         with col1_tab1:
             st.subheader("1. Data Preparation")
             df_example_comments = call_example_comments()
             df_example_replacement = call_example_replacement()
-            # st.markdown("---")
-            download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv", label="Sample download")
-            download_df_as_csv(df_example_replacement, file_name="replacement_data", key="download_replacement_sample_csv",
+
+            # 샘플 데이터 다운로드 링크 생성
+            download_df_as_csv(df_example_comments, file_name="sample_text_data", key="download_text_sample_csv",
+                               label="Sample download")
+            download_df_as_csv(df_example_replacement, file_name="replacement_data",
+                               key="download_replacement_sample_csv",
                                label="replacement download")
-
-
             st.markdown("---")
-            # text_data_uploaded = st.file_uploader("Upload Text data", key="time_text_data")
-
 
             if demo_checkbox_clicked:
                 st.session_state["upload_tab1"] = df_example_comments
@@ -46,46 +50,54 @@ def main():
                 st.session_state["upload_tab1_r"] = st.file_uploader("Upload Text replacement", key="time_text_data_r")
 
             if st.session_state["upload_tab1"] is not None:
+                # 다른 탭들의 업로드 상태 초기화
                 st.session_state["upload_tab2"] = None
                 st.session_state["upload_tab3"] = None
                 st.session_state["upload_tab4"] = None
+
                 text_data_uploaded = st.session_state["upload_tab1"]
+
                 try:
                     if demo_checkbox_clicked:
                         comments = st.session_state["upload_tab1"].loc[:, "comments"].str.lower()
                     else:
                         comments = read_comments_from(text_data_uploaded, column_name="comments")
 
-                        # 텍스트 치환
+                    # 텍스트 치환
                     if st.session_state["upload_tab1_r"] is not None:
                         text_replacement_uploaded = st.session_state["upload_tab1_r"]
-                        text_replacement_dict = read_replacement_from(text_replacement_uploaded, column_name=["key","replace"])
+                        text_replacement_dict = read_replacement_from(text_replacement_uploaded,
+                                                                      column_name=["key", "replace"])
 
-                        for k,v in text_replacement_dict.items():
-                            comments = comments.str.replace(k,v)
+                        for k, v in text_replacement_dict.items():
+                            comments = comments.str.replace(k, v)
 
                     words_ds = prepare_nouns(comments)
-
-                    download_df_as_csv(pd.DataFrame(words_ds), file_name="words_preprocess", key="download_csv_text_preporcess",
+                    download_df_as_csv(pd.DataFrame(words_ds), file_name="words_preprocess",
+                                       key="download_csv_text_preporcess",
                                        label="Words download")
                     st.dataframe(words_ds[:3])
 
                     nouns = []
                     for words_list in words_ds:
                         nouns.extend(words_list)
+
                     df_word_freq = prepare_word_freq(nouns)
                     comments_as_string = ' '.join(comments.astype(str))
                     corpus, dictionary = prepare_networkg(comments_as_string)
 
                     st.session_state["tab1"] = {"plot_df_word_freq": df_word_freq,
                                                 "wordcloud_nouns": nouns,
-                                                "network_corpus":corpus,
-                                                "network_dictionary":dictionary}
+                                                "network_corpus": corpus,
+                                                "network_dictionary": dictionary}
 
                     st.subheader("2. Analysis results")
-                    # download btn
-                    download_df_as_csv(df_word_freq, file_name="word_freq_analysis", key="download_csv_text_analysis", label="Result download")
+
+                    # 결과 다운로드 버튼
+                    download_df_as_csv(df_word_freq, file_name="word_freq_analysis", key="download_csv_text_analysis",
+                                       label="Result download")
                     st.dataframe(df_word_freq.head(3))
+
                 except:
                     st.error('Please verify the file format', icon="🚨")
 
@@ -106,23 +118,21 @@ def main():
                         plot_networkg(corpus, dictionary)
                 except:
                     st.warning("Please upload text data first.")
+
     # Time Series Analysis
     with tab2:
-        col1_tab2, col2_tab2 = st.columns([1,3])
+        col1_tab2, col2_tab2 = st.columns([1, 3])
         with col1_tab2:
             st.subheader("1. Data Preparation")
             df_example_timeseries = call_example_timeseries()
-            download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv", label="Sample download")
-            # time_data_uploaded = st.file_uploader("Upload Time Series", key="time_series_uploader")
-
-            # st.dataframe(df_example_comments.head(2))
+            download_df_as_csv(df_example_timeseries, "sample_timeseries_data", key="download_timeseries_sample_csv",
+                               label="Sample download")
             st.markdown("---")
 
             if demo_checkbox_clicked:
                 st.session_state["upload_tab2"] = df_example_timeseries
             else:
                 st.session_state["upload_tab2"] = st.file_uploader("Upload Time Series", key="time_series_uploader")
-
 
             if st.session_state["upload_tab2"] is not None:
                 st.session_state["upload_tab1"] = None
@@ -146,26 +156,22 @@ def main():
         with col2_tab2:
             if st.session_state["tab2"] is not None:
                 st.subheader("2. Visualization")
-                tab1_col2_tab3, tab2_col2_tab3  = st.tabs(["Prophet Plot", "TimeSeries"])
+                tab1_col2_tab3, tab2_col2_tab3 = st.tabs(["Prophet Plot", "TimeSeries"])
                 timeseries = st.session_state["tab2"]["timeseries"]
                 with tab1_col2_tab3:
                     plot_prophet(timeseries)
                 with tab2_col2_tab3:
                     plot_timesseries_arima(timeseries)
+
+    # Multiple Numerical 탭
     with tab3:
         col1_tab3, col2_tab3 = st.columns(2)
         with col1_tab3:
             st.subheader("1. Data Preparation")
-            # col1_col1_tab3, col2_col1_tab3 = st.columns([2, 1])
-            # with col1_col1_tab3:
             df_example_multi_numeric = call_example_multi_numeric()
-            # with col2_col1_tab3:
-            download_df_as_csv(df_example_multi_numeric, "sample_multi_numeric_data", key="download_multi_numeric_sample_csv",
+            download_df_as_csv(df_example_multi_numeric, "sample_multi_numeric_data",
+                               key="download_multi_numeric_sample_csv",
                                label="Sample download")
-            # multi_data_uploaded = st.file_uploader("Upload numeric data", key="multi_numeric_uploader")
-            # st.dataframe(df_example_comments.head(2))
-
-            # st.dataframe(df_example_comments.head(2))
             st.markdown("---")
 
             if demo_checkbox_clicked:
@@ -184,16 +190,16 @@ def main():
                         y = multi_data_uploaded.loc[:, "target"]
                         X = multi_data_uploaded.drop("target", axis=1)
                         df_multi = pd.concat([y, X], axis=1)
-
                     else:
                         df_multi = read_numeric_from(multi_data_uploaded)
 
                     y_column = df_multi.columns[0]
 
-                    numerical_columns, categorical_columns =  split_data_columns(df_multi.drop([y_column], axis=1))
+                    numerical_columns, categorical_columns = split_data_columns(df_multi.drop([y_column], axis=1))
 
-                    tab1_col1_tab3, tab2_col1_tab3, tab3_col1_tab3, tab4_col1_tab3, tab5_col1_tab3= st.tabs(
-                        ["Missing value", "Numeric Features", "Categorical Features", "Pre-process", "Machine learning"])
+                    tab1_col1_tab3, tab2_col1_tab3, tab3_col1_tab3, tab4_col1_tab3, tab5_col1_tab3 = st.tabs(
+                        ["Missing value", "Numeric Features", "Categorical Features", "Pre-process",
+                         "Machine learning"])
                     with tab1_col1_tab3:
                         if is_na(df_multi):
                             col1_col1_tab3, col2_col1_tab3 = st.columns(2)
@@ -205,7 +211,8 @@ def main():
                         else:
                             plot_missing_value(df_multi)
                     with tab2_col1_tab3:
-                        tab1_tab2_col1_tab3, tab2_tab2_col1_tab3, tab3_tab2_col1_tab3  = st.tabs(["Distribution", "Correlation", "Normality"])
+                        tab1_tab2_col1_tab3, tab2_tab2_col1_tab3, tab3_tab2_col1_tab3 = st.tabs(
+                            ["Distribution", "Correlation", "Normality"])
                         with tab1_tab2_col1_tab3:
                             plot_distribution(df_multi.drop(categorical_columns, axis=1))
                         with tab2_tab2_col1_tab3:
@@ -226,17 +233,18 @@ def main():
         with col2_tab3:
             if st.session_state["tab3"] is not None:
                 st.subheader("3. Actual prediction")
-                # actual_multi_data_uploaded = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
-                # demo mode
+
                 if demo_checkbox_clicked:
                     st.session_state["upload_tab3_a"] = df_multi
                 else:
-                    st.session_state["upload_tab3_a"] = st.file_uploader("Upload actual data", key="actual_multi_data_uploaded")
+                    st.session_state["upload_tab3_a"] = st.file_uploader("Upload actual data",
+                                                                         key="actual_multi_data_uploaded")
 
                 if st.session_state["upload_tab3_a"] is not None:
                     actual_multi_data_uploaded = st.session_state["upload_tab3_a"]
                     try:
                         st.markdown("---")
+
                         if demo_checkbox_clicked:
                             df_X = df_multi
                         else:
@@ -245,29 +253,33 @@ def main():
                         X_new = preprocess_data(df_X, show=False)
                         best_model = st.session_state["tab3"].get("ml_model")
                         results = model_predictions_and_visual(X_new, best_model)
+
+                        # 결과 다운로드 버튼
                         download_df_as_csv(results, file_name="numerical_results",
                                            key="download_csv_numeric_analysis", label="Result download")
 
                     except:
                         st.error('Please verify the file format', icon="🚨")
 
-    with tab4 :
-        col1_tab4, col2_tab4 = st.columns([1,3])
+    # Image Analysis 탭
+    with tab4:
+        col1_tab4, col2_tab4 = st.columns([1, 3])
         with col1_tab4:
             st.subheader("1. Data Preparation")
 
+            # 이미지 샘플 다운로드
             _ = download_image_example()
-            # image_data_uploaded = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
 
             if demo_checkbox_clicked:
                 st.session_state["upload_tab4"] = download_image_example(demo_mode=True)
                 if st.session_state["upload_tab4"] == "":
                     st.session_state["upload_tab4"] = None
             else:
-                st.session_state["upload_tab4"] = st.file_uploader("Upload image data", key="Image_uploader", type=["jpg", "jpeg", "png"])
-
+                st.session_state["upload_tab4"] = st.file_uploader("Upload image data", key="Image_uploader",
+                                                                   type=["jpg", "jpeg", "png"])
 
             st.markdown("---")
+
             if st.session_state["upload_tab4"] is not None:
                 st.session_state["upload_tab1"] = None
                 st.session_state["upload_tab2"] = None
@@ -286,5 +298,6 @@ def main():
                     st.write(e)
 
 
+# 메인 함수 실행
 if __name__ == "__main__":
     main()
