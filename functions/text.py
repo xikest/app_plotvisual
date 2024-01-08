@@ -30,7 +30,6 @@ def call_example_comments() -> pd.DataFrame:
     st.markdown("`comments` column is the subject of analysis.")
     return df
 
-
 def call_example_replacement() -> pd.DataFrame:
     # creating exmaple data
     replacement = {
@@ -41,6 +40,41 @@ def call_example_replacement() -> pd.DataFrame:
     st.markdown("`key`,`replacement`: replacement columns ")
     return df
 
+def read_comments_from_dir(data_uploaded:str, column_name="comments") -> pd.Series:
+    df = pd.DataFrame()
+
+    if data_uploaded.endswith('.csv'):
+        df = pd.read_csv(data_uploaded)
+    elif data_uploaded.endswith('.xlsx'):
+        df = pd.read_excel(data_uploaded, engine='openpyxl')
+    elif data_uploaded.endswith('.txt'):
+        df = pd.read_csv(data_uploaded, delimiter='\t')  # Assuming tab-separated text file
+    else:
+        st.error("This file format is not supported. Please upload a CSV, Excel, or text file.")
+        st.stop()
+    try:
+        comments = df.loc[:, column_name]
+    except KeyError:
+        comments = df.iloc[:, 0]
+    return comments.str.lower()
+
+def read_replacement_from_dir(data_uploaded, column_name=["key","replace"]) -> dict:
+    df = pd.DataFrame()
+
+    if data_uploaded.endswith('.csv'):
+        df = pd.read_csv(data_uploaded)
+    elif data_uploaded.endswith('.xlsx'):
+        df = pd.read_excel(data_uploaded, engine='openpyxl')
+    elif data_uploaded.endswith('.txt'):
+        df = pd.read_csv(data_uploaded, delimiter='\t')  # Assuming tab-separated text file
+    else:
+        st.error("This file format is not supported. Please upload a CSV, Excel, or text file.")
+        st.stop()
+    try:
+        remplacement_dict=  {k:v for k, v in zip(df[column_name[0]].str.lower(), df[column_name[1]].str.lower())}
+    except KeyError:
+        remplacement_dict = {k:v for k, v in zip(df.iloc[:,0].str.lower(), df.iloc[:,1].str.lower())}
+    return remplacement_dict
 
 def read_comments_from(data_uploaded, column_name="comments") -> pd.Series:
     df = pd.DataFrame()
@@ -60,6 +94,8 @@ def read_comments_from(data_uploaded, column_name="comments") -> pd.Series:
     except KeyError:
         comments = df.iloc[:, 0]
     return comments.str.lower()
+
+
 def read_replacement_from(data_uploaded, column_name=["key","replace"]) -> dict:
     df = pd.DataFrame()
     supported_formats = ['.csv', '.xlsx', '.txt']
@@ -119,7 +155,6 @@ def prepare_word_freq(nouns) -> pd.DataFrame:
     df_word_freq = df_word_freq.sort_values(by='Frequency', ascending=False)
     return df_word_freq
 
-
 def download_df_as_csv(df: pd.DataFrame, file_name: str, key:str, preview=True, label:str="Download") -> None:
 
     csv_file = df.to_csv(index=False).encode('utf-8')
@@ -140,7 +175,6 @@ def plot_freq(df_word_freq, num_dis: int = 10):
     fig.update_xaxes(tickangle=45)
     fig.update_layout(width=800, height=400)
     return st.plotly_chart(fig, use_container_width=True)
-
 
 def plot_wordcloud(nouns):
     # Create a WordCloud object with the desired settings

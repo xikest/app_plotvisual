@@ -4,7 +4,8 @@ from functions.text import *
 from functions.timeseries import *
 from functions.multi_numeric import *
 from functions.image_analysis import *
-
+from pathlib import Path
+import os
 
 # 메인 함수 정의
 def main():
@@ -15,6 +16,14 @@ def main():
     state_vars = ["tab1", "tab2", "tab3", "tab4", "upload_tab1", "upload_tab1_r", "upload_tab2",
                   "upload_tab3", "upload_tab3_a", "upload_tab4"]
 
+    text_dir = Path("text_dir")
+    if not text_dir.exists():
+        text_dir.mkdir(parents=True)
+
+    text_r_dir = Path("text_r_dir")
+    if not text_r_dir.exists():
+        text_r_dir.mkdir(parents=True)
+
     # 각 변수에 대해 세션 상태를 설정하거나 유지합니다.
     for var in state_vars:
         st.session_state.setdefault(var, None)
@@ -23,6 +32,7 @@ def main():
     st.header("Plot Visualization")
     st.write("Relaxation with ☕")
     demo_checkbox_clicked = st.checkbox("Demo")
+    dir_check = False
 
     # 각 탭에 대한 컨테이너를 삽입합니다.
     tab1, tab2, tab3, tab4 = st.tabs(["Text", "Time Series", "Multiple Numerical", "Image Analysis"])
@@ -43,11 +53,44 @@ def main():
                                label="replacement download")
             st.markdown("---")
 
+
+
+
+
+
             if demo_checkbox_clicked:
                 st.session_state["upload_tab1"] = df_example_comments
             else:
-                st.session_state["upload_tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
-                st.session_state["upload_tab1_r"] = st.file_uploader("Upload Text replacement", key="time_text_data_r")
+
+
+                file_list_text = os.listdir(text_dir)
+                file_list_text_r = os.listdir(text_r_dir)
+
+                # st.session_state["upload_tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
+                # st.session_state["upload_tab1_r"] = st.file_uploader("Upload Text replacement", key="time_text_data_r")
+
+                if file_list_text:
+                    selected_file_data = st.selectbox("Select a text data file", file_list_text)
+                    file_path_data = os.path.join(text_dir, selected_file_data)
+                    st.session_state["upload_tab1"] = file_path_data
+                    dir_check = True
+
+                else:
+                    # st.warning("No text data files found in the specified directory.")
+                    st.session_state["upload_tab1"] = st.file_uploader("Upload Text data", key="time_text_data")
+
+                if file_list_text_r:
+                    selected_file_data_r = st.selectbox("Select a text replacement file", file_list_text_r)
+                    file_path_data_r = os.path.join(text_r_dir, selected_file_data_r)
+                    st.session_state["upload_tab1_r"] = file_path_data_r
+                    dir_check = True
+
+                else:
+                    # st.warning("No text replacement files found in the specified directory.")
+                    st.session_state["upload_tab1_r"] = st.file_uploader("Upload Text replacement", key="time_text_data_r")
+
+
+
 
             if st.session_state["upload_tab1"] is not None:
                 # 다른 탭들의 업로드 상태 초기화
@@ -61,13 +104,20 @@ def main():
                     if demo_checkbox_clicked:
                         comments = st.session_state["upload_tab1"].loc[:, "comments"].str.lower()
                     else:
-                        comments = read_comments_from(text_data_uploaded, column_name="comments")
+                        if dir_check:
+                            comments = read_comments_from_dir(text_data_uploaded, column_name="comments")
+                        else:
+                            comments = read_comments_from(text_data_uploaded, column_name="comments")
 
                     # 텍스트 치환
                     if st.session_state["upload_tab1_r"] is not None:
                         text_replacement_uploaded = st.session_state["upload_tab1_r"]
-                        text_replacement_dict = read_replacement_from(text_replacement_uploaded,
-                                                                      column_name=["key", "replace"])
+                        if dir_check:
+                            text_replacement_dict = read_replacement_from_dir(text_replacement_uploaded,
+                                                                          column_name=["key", "replace"])
+                        else:
+                            text_replacement_dict = read_replacement_from(text_replacement_uploaded,
+                                                                          column_name=["key", "replace"])
 
                         for k, v in text_replacement_dict.items():
                             comments = comments.str.replace(k, v)
@@ -98,7 +148,8 @@ def main():
                                        label="Result download")
                     st.dataframe(df_word_freq.head(3))
 
-                except:
+                except Exception as e:
+                    st.write(e)
                     st.error('Please verify the file format', icon="🚨")
 
         with col2_tab1:
