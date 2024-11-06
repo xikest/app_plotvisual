@@ -6,6 +6,7 @@ from functions.multi_numeric import *
 from functions.image_analysis import *
 from pathlib import Path
 import os
+import json
 
 # 메인 함수 정의
 def main():
@@ -122,10 +123,12 @@ def main():
                         for k, v in text_replacement_dict.items():
                             comments = comments.str.replace(k, v)
 
-                    words_ds = prepare_nouns(comments)
-                    download_df_as_csv(pd.DataFrame(words_ds), file_name="words_preprocess",
-                                       key="download_csv_text_preporcess",
-                                       label="Words download")
+                    if demo_checkbox_clicked:
+                        words_ds = pd.read_json("https://raw.githubusercontent.com/xikest/app_plotvisual/main/words_ds.json", typ="series", orient="values")
+                    else:
+                        words_ds = prepare_nouns(comments)
+
+                    
                     st.dataframe(words_ds[:3])
 
                     nouns = []
