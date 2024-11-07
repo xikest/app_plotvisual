@@ -137,7 +137,18 @@ def main():
 
                     df_word_freq = prepare_word_freq(nouns)
                     comments_as_string = ' '.join(comments.astype(str))
-                    corpus, dictionary = prepare_networkg(comments_as_string)
+                    
+                    
+                    if demo_checkbox_clicked:
+                        with open("https://raw.githubusercontent.com/xikest/app_plotvisual/main/corpus.pkl", 'rb') as f:
+                            corpus = pickle.load(f)
+                        with open("https://raw.githubusercontent.com/xikest/app_plotvisual/main/dictionary.pkl", 'rb') as f:
+                            dictionary = pickle.load(f)
+                    else:
+                        corpus, dictionary = prepare_networkg(comments_as_string)
+                    
+
+                    
 
                     st.session_state["tab1"] = {"plot_df_word_freq": df_word_freq,
                                                 "wordcloud_nouns": nouns,

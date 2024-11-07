@@ -128,6 +128,8 @@ def prepare_networkg(text) -> "corpus, dictionary":
     # create copus for LDA 
     dictionary = corpora.Dictionary([nouns_adjectives])
     corpus = [dictionary.doc2bow(nouns_adjectives)]
+
+    
     return corpus, dictionary
 
 def prepare_nouns(comments:pd.Series) ->pd.Series:
