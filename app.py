@@ -139,12 +139,13 @@ def main():
                     df_word_freq = prepare_word_freq(nouns)
                     comments_as_string = ' '.join(comments.astype(str))
                     
-                    
+                
                     if demo_checkbox_clicked:
-                        with open("https://raw.githubusercontent.com/xikest/app_plotvisual/main/corpus.pkl", 'rb') as f:
-                            corpus = pickle.load(f)
-                        with open("https://raw.githubusercontent.com/xikest/app_plotvisual/main/dictionary.pkl", 'rb') as f:
-                            dictionary = pickle.load(f)
+                        # corpus.pkl 파일 다운로드 및 로드
+                        with requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/corpus.pkl") as response:
+                            corpus = pickle.load(response.content)
+                        with requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/dictionary.pkl") as requests.get:
+                            dictionary = pickle.load(response.content)
                     else:
                         corpus, dictionary = prepare_networkg(comments_as_string)
                     
