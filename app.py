@@ -130,7 +130,7 @@ def main():
                         words_ds = prepare_nouns(comments)
 
                     
-                    st.dataframe(words_ds[:3])
+                    # st.dataframe(words_ds[:3])
 
                     nouns = []
                     for words_list in words_ds:
@@ -162,7 +162,7 @@ def main():
                     # 결과 다운로드 버튼
                     download_df_as_csv(df_word_freq, file_name="word_freq_analysis", key="download_csv_text_analysis",
                                        label="Result download")
-                    st.dataframe(df_word_freq.head(3))
+                    # st.dataframe(df_word_freq.head(3))
 
                 except Exception as e:
                     st.write(e)
