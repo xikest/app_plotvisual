@@ -142,9 +142,9 @@ def main():
                 
                     if demo_checkbox_clicked:
                         # corpus.pkl 파일 다운로드 및 로드
-                        corpus_response = requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/corpus.pkl") as response:
+                        corpus_response = requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/corpus.pkl")
                         corpus = pickle.loads(corpus_response.content)
-                        dictionary_response = requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/dictionary.pkl") as requests.get:
+                        dictionary_response = requests.get("https://raw.githubusercontent.com/xikest/app_plotvisual/main/dictionary.pkl")
                         dictionary = pickle.loads(dictionary_response.content)
                     else:
                         corpus, dictionary = prepare_networkg(comments_as_string)
