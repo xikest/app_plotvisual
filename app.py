@@ -7,6 +7,7 @@ from functions.image_analysis import *
 from pathlib import Path
 import os
 import json
+import pickle
 
 # 메인 함수 정의
 def main():
